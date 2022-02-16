@@ -1,4 +1,4 @@
-import 'bulma/css/bulma.css'
+// import 'bulma/css/bulma.css'
 import { render } from 'react-dom'
 import App from './App'
 

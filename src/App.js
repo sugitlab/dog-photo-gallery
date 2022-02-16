@@ -1,55 +1,39 @@
 import { useState, useEffect } from 'react'
 import { fetchImages } from './api'
+import './App.css'
 
 function Form(props) {
   function handleSubmit(event) {
-    // IMPORTANT: submit イベントのデフォルトの振る舞いを止めるために event.preventDefault() を呼び出します。デフォルトの振る舞いではフォームを送信した後にページのリロードが行われるため、アプリケーションの状態がページアクセス時にリセットされてしまうためです
     event.preventDefault()
     const { breed } = event.target.elements
     props.onFormSubmit(breed.value)
   }
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className="field has-addons">
-          <div className="select is-fullwidth">
-            <select name="breed" defaultValue="shiba">
-              <option value="shiba">Shiba</option>
-              <option value="akita">Akita</option>
-            </select>
-          </div>
-        </div>
-        <div className="control">
-          <button type="submit" className="button is-dark">
-            Reload
-          </button>
-        </div>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="form">
+      <select name="breed" defaultValue="shiba" className="select">
+        <option value="shiba">Shiba</option>
+        <option value="akita">Akita</option>
+      </select>
+      <button type="submit" className="button">
+        Reload
+      </button>
+    </form>
   )
 }
 
 function Header() {
   return (
-    <header className="hero is-dark is-bold">
-      <div className="hero-body">
-        <div className="container">
-          <h1 className="title">Cute Dog Image</h1>
-        </div>
-      </div>
+    <header className="header">
+      <h1 className="title">Cute Dog Image</h1>
     </header>
   )
 }
 
 function Image(props) {
   return (
-    <div className="card">
-      <div className="card-image">
-        <figure className="image">
-          <img src={props.src} alt="cute dog" />
-        </figure>
-      </div>
-    </div>
+    <figure className="image">
+      <img src={props.src} alt="cute dog" />
+    </figure>
   )
 }
 
@@ -63,10 +47,10 @@ function Gallery(props) {
     return <Loading />
   }
   return (
-    <div className="columns is-vcentered is-multiline">
+    <div className="gallery">
       {urls.map((url) => {
         return (
-          <div key={url} className="column is-3">
+          <div key={url}>
             <Image src={url} />
           </div>
         )
@@ -91,16 +75,12 @@ function Main() {
   }
 
   return (
-    <main>
-      <section className="section">
-        <div className="container">
-          <Form onFormSubmit={reloadImages} />
-        </div>
+    <main className="main">
+      <section>
+        <Form onFormSubmit={reloadImages} />
       </section>
-      <section className="section">
-        <div className="container">
-          <Gallery urls={urls} />
-        </div>
+      <section>
+        <Gallery urls={urls} />
       </section>
     </main>
   )
@@ -109,12 +89,10 @@ function Main() {
 function Footer() {
   return (
     <footer className="footer">
-      <div className="content has-text-centered">
-        <p>Dog imagse are retrieved from Dog API</p>
-        <p>
-          <a href="https://dog.ceo/dog-api/about">Donate to Dog API</a>
-        </p>
-      </div>
+      <p>Dog imagse are retrieved from Dog API</p>
+      <p>
+        <a href="https://dog.ceo/dog-api/about">Donate to Dog API</a>
+      </p>
     </footer>
   )
 }

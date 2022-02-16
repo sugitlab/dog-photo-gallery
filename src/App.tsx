@@ -1,19 +1,26 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, FormEventHandler } from 'react'
 import { fetchImages } from './api'
 
-function Form(props) {
-  function handleSubmit(event) {
-    // IMPORTANT: submit イベントのデフォルトの振る舞いを止めるために event.preventDefault() を呼び出します。デフォルトの振る舞いではフォームを送信した後にページのリロードが行われるため、アプリケーションの状態がページアクセス時にリセットされてしまうためです
+type FormType = {
+  onFormSubmit: (val: string) => void
+}
+function Form(props: FormType) {
+  const [breed, setBreed] = useState<string>("shiba")
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    const { breed } = event.target.elements
-    props.onFormSubmit(breed.value)
+    props.onFormSubmit(breed)
   }
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    console.log(event.target.value)
+    setBreed(event.target.value)
+  }
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="field has-addons">
           <div className="select is-fullwidth">
-            <select name="breed" defaultValue="shiba">
+            <select name="breed" defaultValue="shiba" onChange={(event) => handleChange(event)}>
               <option value="shiba">Shiba</option>
               <option value="akita">Akita</option>
             </select>
@@ -41,7 +48,11 @@ function Header() {
   )
 }
 
-function Image(props) {
+type ImageType = {
+  src: string
+}
+
+function Image(props: ImageType) {
   return (
     <div className="card">
       <div className="card-image">
@@ -56,8 +67,10 @@ function Image(props) {
 function Loading() {
   return <div> Loading ... </div>
 }
-
-function Gallery(props) {
+type GalleryType = {
+  urls: string[] | null
+}
+function Gallery(props: GalleryType) {
   const { urls } = props
   if (urls == null) {
     return <Loading />
@@ -84,7 +97,7 @@ function Main() {
     })
   }, [])
 
-  function reloadImages(breed) {
+  function reloadImages(breed: string) {
     fetchImages(breed).then((res) => {
       setUrls(res)
     })
